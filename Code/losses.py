@@ -12,6 +12,8 @@ from keras import backend as K
 
 
 def Weighted_Categorical_CrossEntropy(WEIGHTS):
+        #WEIGHTS = { 'weights': [1.0,2.0]}
+
     weights = WEIGHTS['weights']
     weights = tf.Variable(weights,dtype=tf.float32)
     def loss_(y_true, y_pred):
@@ -30,5 +32,7 @@ def Weighted_Categorical_CrossEntropy(WEIGHTS):
 # In[ ]:
 
 
-
+def binary_crossentropy(y_true, y_pred):
+    class_loglosses = K.mean(K.binary_crossentropy(y_true, y_pred), axis=[0, 1, 2])
+    return K.sum(class_loglosses )
 
