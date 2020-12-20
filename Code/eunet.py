@@ -17,9 +17,6 @@ import os
 # In[2]:
 
 
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
-os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
-
 
 # In[3]:
 
