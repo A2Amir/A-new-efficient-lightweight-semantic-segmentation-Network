@@ -94,32 +94,32 @@ def en_build(inp, dropout_rate=0.01):
     #print(enc_layer1.shape)
     
     enc_layer2 = bottleneck(enc_layer1, 32, downsample=True, dropout_rate=dropout_rate)  # bottleneck 1.0
-    for _ in range(4):
+    for _ in range(3):
         enc_layer2 = bottleneck(enc_layer2, 32, dropout_rate=dropout_rate)  # bottleneck 1.i
     #print(enc_layer2.shape)
     
     enc_layer3 = bottleneck(enc_layer2, 64, downsample=True)  # bottleneck 2.0
-    for _ in range(3):
+    for _ in range(2):
         enc_layer3 = bottleneck(enc_layer3, 64)  # bottleneck 2.1
         enc_layer3 = bottleneck(enc_layer3, 64, dilated=2)  # bottleneck 2.2
         enc_layer3 = bottleneck(enc_layer3, 64, asymmetric=5)  # bottleneck 2.3
         enc_layer3 = bottleneck(enc_layer3, 64, dilated=4)  # bottleneck 2.4
         enc_layer3 = bottleneck(enc_layer3, 64)  # bottleneck 2.5
-        enc_layer3 = bottleneck(enc_layer3, 64, dilated=8)  # bottleneck 2.6
-        enc_layer3 = bottleneck(enc_layer3, 64, asymmetric=5)  # bottleneck 2.7
-        enc_layer3 = bottleneck(enc_layer3, 64, dilated=16)  # bottleneck 2.8
+        #enc_layer3 = bottleneck(enc_layer3, 64, dilated=8)  # bottleneck 2.6
+        #enc_layer3 = bottleneck(enc_layer3, 64, asymmetric=5)  # bottleneck 2.7
+        #enc_layer3 = bottleneck(enc_layer3, 64, dilated=16)  # bottleneck 2.8
     #print(enc_layer3.shape)
     
     enc_layer4 = bottleneck(enc_layer3, 128, downsample=True)  # bottleneck 2.0
-    for _ in range(2):
+    for _ in range(1):
         enc_layer4 = bottleneck(enc_layer4, 128)  # bottleneck 3.1
         enc_layer4 = bottleneck(enc_layer4, 128, dilated=2)  # bottleneck 3.2
         enc_layer4 = bottleneck(enc_layer4, 128, asymmetric=5)  # bottleneck 3.3
         enc_layer4 = bottleneck(enc_layer4, 128, dilated=4)  # bottleneck 3.4
         enc_layer4 = bottleneck(enc_layer4, 128)  # bottleneck 3.5
-        enc_layer4 = bottleneck(enc_layer4, 128, dilated=8)  # bottleneck 3.6
-        enc_layer4 = bottleneck(enc_layer4, 128, asymmetric=5)  # bottleneck 3.7
-        enc_layer4 = bottleneck(enc_layer4, 128, dilated=16)  # bottleneck 3.8
+        #enc_layer4 = bottleneck(enc_layer4, 128, dilated=8)  # bottleneck 3.6
+        #enc_layer4 = bottleneck(enc_layer4, 128, asymmetric=5)  # bottleneck 3.7
+        #enc_layer4 = bottleneck(enc_layer4, 128, dilated=16)  # bottleneck 3.8
     #print(enc_layer4.shape)
     
 
@@ -182,23 +182,20 @@ def de_bottleneck(encoder, decoder, number_filter, upsample=False, reverse_modul
 
 def de_build( enc_layer4, enc_layer3, enc_layer2, enc_layer1, number_class = 3):
     
-    dec_1 = de_bottleneck(enc_layer4,None, 64, upsample=True, reverse_module=True, last=True)
+    dec_1 = de_bottleneck(enc_layer4,None, 64, upsample=True, reverse_module=True)
      
     dec_1_1 = de_bottleneck(dec_1,None, 64)  # bottleneck 1.1
     dec_1_2 = de_bottleneck(dec_1_1,None, 64)  # bottleneck 1.2
-    dec_1_3 = de_bottleneck(dec_1_2,dec_1, 64)  # bottleneck 1.3
 
 
-    dec_2 = de_bottleneck(dec_1_3, enc_layer3, 32, upsample=True, reverse_module=True,last=True)
+    dec_2 = de_bottleneck(dec_1_2, enc_layer3, 32, upsample=True, reverse_module=True)
   
     dec_2_1 = de_bottleneck(dec_2,None, 32)  # bottleneck 2.1
     dec_2_2 = de_bottleneck(dec_2_1,None, 32)  # bottleneck 2.2
     dec_2_3 = de_bottleneck(dec_2_2,None, 32)  # bottleneck 2.3
     dec_2_4 = de_bottleneck(dec_2_3,None, 32)  # bottleneck 2.4
-    dec_2_5 = de_bottleneck(dec_2_4,None, 32)  # bottleneck 2.5
-    dec_2_6 = de_bottleneck(dec_2_5,dec_2, 32)  # bottleneck 2.6
-    
-    dec_3 = de_bottleneck(dec_2_6, enc_layer2, 16, upsample=True, reverse_module=True,last=True )
+
+    dec_3 = de_bottleneck(dec_2_4, enc_layer2, 16, upsample=True, reverse_module=True )
 
     dec_3_1 = de_bottleneck(dec_3,None, 16)  # bottleneck 3.1
     dec_3_2 = de_bottleneck(dec_3_1,None, 16)  # bottleneck 3.2
@@ -206,28 +203,21 @@ def de_build( enc_layer4, enc_layer3, enc_layer2, enc_layer1, number_class = 3):
     dec_3_4 = de_bottleneck(dec_3_3,None, 16)  # bottleneck 3.4
     dec_3_5 = de_bottleneck(dec_3_4,None, 16)  # bottleneck 3.5
     dec_3_6 = de_bottleneck(dec_3_5,None, 16)  # bottleneck 3.6
-    dec_3_7 = de_bottleneck(dec_3_6,None, 16)  # bottleneck 3.7
-    dec_3_8 = de_bottleneck(dec_3_7,None, 16)  # bottleneck 3.8
-    dec_3_9 = de_bottleneck(dec_3_8,dec_3, 16)  # bottleneck 3.9
 
 
-    dec_4 = de_bottleneck(dec_3_9, enc_layer1, number_class, upsample=True, reverse_module=True, last=True)
+    dec_4 = de_bottleneck(dec_3_6, enc_layer1, number_class, upsample=True, reverse_module=True)
     
-    dec_4_1 = de_bottleneck(dec_4, None, number_class,reverse_module=True )# bottleneck 5.1 
-    dec_4_2 = de_bottleneck(dec_4_1, None, number_class, reverse_module=True)# bottleneck 5.2 
-    dec_4_3 = de_bottleneck(dec_4_2, None, number_class,reverse_module=True )# bottleneck 5.3     
-    dec_4_4 = de_bottleneck(dec_4_3, None, number_class,reverse_module=True )# bottleneck 5.4 
-    dec_4_5 = de_bottleneck(dec_4_4, None, number_class, reverse_module=True)# bottleneck 5.5 
-    dec_4_6 = de_bottleneck(dec_4_5, None, number_class,reverse_module=True)# bottleneck 5.6 
-
-    dec_4_7 = de_bottleneck(dec_4_6, None, number_class,reverse_module=True )# bottleneck 5.7 
-    dec_4_8 = de_bottleneck(dec_4_7, None, number_class, reverse_module=True)# bottleneck 5.8 
-    dec_4_9 = de_bottleneck(dec_4_8, None, number_class,reverse_module=True)# bottleneck 5.9 
+    dec_4_1 = de_bottleneck(dec_4, None, number_class)# bottleneck 5.1 
+    dec_4_2 = de_bottleneck(dec_4_1, None, number_class)# bottleneck 5.2 
+    dec_4_3 = de_bottleneck(dec_4_2, None, number_class)# bottleneck 5.3     
+    dec_4_4 = de_bottleneck(dec_4_3, None, number_class)# bottleneck 5.4 
+    dec_4_5 = de_bottleneck(dec_4_4, None, number_class)# bottleneck 5.5 
+    dec_4_6 = de_bottleneck(dec_4_5, None, number_class)# bottleneck 5.6 
+    dec_4_7 = de_bottleneck(dec_4_6, None, number_class)# bottleneck 5.7 
+    dec_4_8 = de_bottleneck(dec_4_7, None, number_class, last=True)# bottleneck 5.8 
+ 
     
-    dec_4_10 = de_bottleneck(dec_4_9, None, number_class,reverse_module=True )# bottleneck 5.10 
-    dec_4_11 = de_bottleneck(dec_4_10, None, number_class, reverse_module=True)# bottleneck 5.11 
-    dec_4_12 = de_bottleneck(dec_4_11, dec_4, number_class,reverse_module=True, last=True )# bottleneck 5.12 
-    return dec_4_12
+    return dec_4_8
 
 
 # In[8]:
