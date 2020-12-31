@@ -22,4 +22,5 @@ The architecture of the E-UNet consists of three sections, including:
 ### 2.1. The contraction section:
 
 This section is used to capture the context of object of interest ( without concerning the location of object) in images and consists of :
-(a) E-UNet initial block. MaxPooling is performed with non-overlapping 2×2 windows, and the convolution has 13 filters that sum to 16 feature maps after concatenation.
+
+(a): E-UNet initial block. MaxPooling is performed with non-overlapping 2×2 windows, and the convolution has 13 filters that sum to 16 feature maps after concatenation.
