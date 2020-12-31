@@ -13,8 +13,10 @@ To overcome this challenge I tried to improve the ENet (A Deep Neural Network Ar
 ## 2. Model
 The architecture of the E-UNet consists of three sections, including:
 
- 1.The contraction section
- 2.The expansion section
+ 1. The contraction section
+ 
+ 2. The expansion section
+ 
  3. The skip connection
  
 ### 2.1. The contraction section:
