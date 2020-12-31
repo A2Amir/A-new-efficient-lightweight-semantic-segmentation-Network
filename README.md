@@ -1,6 +1,6 @@
 
 <header>
-<h2 class="p-name">A new  efficient lightweight semantic segmentation Network(E-UNet)</h1>
+<h2 class="p-name">A new  efficient lightweight semantic segmentation Network (E-UNet)</h1>
 </header>
 <section data-field="subtitle" class="p-summary">
 
