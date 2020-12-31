@@ -105,9 +105,11 @@ def en_build(inp, dropout_rate=0.01):
         enc_layer3 = bottleneck(enc_layer3, 64, asymmetric=5)  # bottleneck 2.3
         enc_layer3 = bottleneck(enc_layer3, 64, dilated=4)  # bottleneck 2.4
         enc_layer3 = bottleneck(enc_layer3, 64)  # bottleneck 2.5
-        #enc_layer3 = bottleneck(enc_layer3, 64, dilated=8)  # bottleneck 2.6
-        #enc_layer3 = bottleneck(enc_layer3, 64, asymmetric=5)  # bottleneck 2.7
-        #enc_layer3 = bottleneck(enc_layer3, 64, dilated=16)  # bottleneck 2.8
+        enc_layer3 = bottleneck(enc_layer3, 64, dilated=8)  # bottleneck 2.6
+        enc_layer3 = bottleneck(enc_layer3, 64, asymmetric=5)  # bottleneck 2.7
+        enc_layer3 = bottleneck(enc_layer3, 64, dilated=16)  # bottleneck 2.8
+        enc_layer3 = bottleneck(enc_layer3, 64)  # bottleneck 2.9
+
     #print(enc_layer3.shape)
     
     enc_layer4 = bottleneck(enc_layer3, 128, downsample=True)  # bottleneck 2.0
@@ -117,9 +119,11 @@ def en_build(inp, dropout_rate=0.01):
         enc_layer4 = bottleneck(enc_layer4, 128, asymmetric=5)  # bottleneck 3.3
         enc_layer4 = bottleneck(enc_layer4, 128, dilated=4)  # bottleneck 3.4
         enc_layer4 = bottleneck(enc_layer4, 128)  # bottleneck 3.5
-        #enc_layer4 = bottleneck(enc_layer4, 128, dilated=8)  # bottleneck 3.6
-        #enc_layer4 = bottleneck(enc_layer4, 128, asymmetric=5)  # bottleneck 3.7
-        #enc_layer4 = bottleneck(enc_layer4, 128, dilated=16)  # bottleneck 3.8
+        enc_layer4 = bottleneck(enc_layer4, 128, dilated=8)  # bottleneck 3.6
+        enc_layer4 = bottleneck(enc_layer4, 128, asymmetric=5)  # bottleneck 3.7
+        enc_layer4 = bottleneck(enc_layer4, 128, dilated=16)  # bottleneck 3.8
+        enc_layer4 = bottleneck(enc_layer4, 128)  # bottleneck 3.5
+
     #print(enc_layer4.shape)
     
 
