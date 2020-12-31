@@ -10,9 +10,9 @@ from tensorflow.keras.layers import SpatialDropout2D, Permute, Activation, Resha
 from tensorflow.keras.layers import concatenate, add, Input
 from tensorflow.keras.layers import BatchNormalization, MaxPooling2D
 from tensorflow.keras.models import Model
-
+from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 import os
-
+import datetime
 
 # In[2]:
 
@@ -180,23 +180,20 @@ def de_bottleneck(encoder, decoder, number_filter, upsample=False, reverse_modul
 
 
 
-def de_build( enc_layer4, enc_layer3, enc_layer2, enc_layer1, number_class = 3):
+def de_build(enc_layer4, enc_layer3, enc_layer2, enc_layer1, number_class = 3):
     
     dec_1 = de_bottleneck(enc_layer4,None, 64, upsample=True, reverse_module=True)
-     
     dec_1_1 = de_bottleneck(dec_1,None, 64)  # bottleneck 1.1
     dec_1_2 = de_bottleneck(dec_1_1,None, 64)  # bottleneck 1.2
 
 
     dec_2 = de_bottleneck(dec_1_2, enc_layer3, 32, upsample=True, reverse_module=True)
-  
     dec_2_1 = de_bottleneck(dec_2,None, 32)  # bottleneck 2.1
     dec_2_2 = de_bottleneck(dec_2_1,None, 32)  # bottleneck 2.2
     dec_2_3 = de_bottleneck(dec_2_2,None, 32)  # bottleneck 2.3
     dec_2_4 = de_bottleneck(dec_2_3,None, 32)  # bottleneck 2.4
 
     dec_3 = de_bottleneck(dec_2_4, enc_layer2, 16, upsample=True, reverse_module=True )
-
     dec_3_1 = de_bottleneck(dec_3,None, 16)  # bottleneck 3.1
     dec_3_2 = de_bottleneck(dec_3_1,None, 16)  # bottleneck 3.2
     dec_3_3 = de_bottleneck(dec_3_2,None, 16)  # bottleneck 3.3
@@ -206,7 +203,6 @@ def de_build( enc_layer4, enc_layer3, enc_layer2, enc_layer1, number_class = 3):
 
 
     dec_4 = de_bottleneck(dec_3_6, enc_layer1, number_class, upsample=True, reverse_module=True)
-    
     dec_4_1 = de_bottleneck(dec_4, None, number_class)# bottleneck 5.1 
     dec_4_2 = de_bottleneck(dec_4_1, None, number_class)# bottleneck 5.2 
     dec_4_3 = de_bottleneck(dec_4_2, None, number_class)# bottleneck 5.3     
@@ -228,8 +224,8 @@ def build_EUNet(number_classes, input_height=256, input_width=256):
     assert input_width % 32 == 0
     
     img_input = Input(shape=(input_height, input_width, 3))
-    en_input, enc_layer1, enc_layer2, enc_layer3 = en_build(img_input, dropout_rate=0.01)    
-    output = de_build( enc_layer3, enc_layer2, enc_layer1, en_input, number_class = number_classes)
+    enc_layer1, enc_layer2, enc_layer3, enc_layer4 = en_build(img_input, dropout_rate=0.01)    
+    output = de_build( enc_layer4, enc_layer3, enc_layer2, enc_layer1, number_class = number_classes)
     
     model = Model(img_input, output)
 
@@ -237,4 +233,16 @@ def build_EUNet(number_classes, input_height=256, input_width=256):
 
 
 # In[9]:
+def get_callbacks():
+    
+    timestr = datetime.datetime.now().strftime("(%m-%d-%Y , %H:%M:%S)")
+    model_dir = os.path.join('./models','E_UNet_{}'.format(timestr))
+    checkpoint = ModelCheckpoint(model_dir, monitor='val_loss', verbose=2, 
+                                 save_best_only=True, mode='min', save_weights_only = False)
 
+    log_dir = os.path.join('./logs','E_UNet_{}'.format(timestr))
+    tensorboard = TensorBoard(log_dir=log_dir, histogram_freq=0, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None, embeddings_data=None, update_freq='epoch')
+
+    callbacks_list = [checkpoint, tensorboard] 
+    
+    return callbacks_list
